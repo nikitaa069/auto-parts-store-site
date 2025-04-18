@@ -1,21 +1,793 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Поехали!</title>
-    <meta name="description" content="Poehali.dev — запусти свой сайт за минуту!" />
-    <meta name="author" content="poehali.dev" />
-     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>АвтоЗапчасти - Магазин автозапчастей</title>
+  <!-- Базовые стили Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            autoparts: {
+              DEFAULT: 'hsl(215, 100%, 50%)',
+              dark: 'hsl(215, 100%, 40%)',
+              light: 'hsl(215, 100%, 60%)',
+              foreground: 'hsl(0, 0%, 100%)'
+            },
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Базовые стили */
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col bg-white">
+  <!-- Шапка сайта -->
+  <header class="sticky top-0 z-50 bg-white border-b shadow-sm">
+    <div class="container mx-auto px-4 py-4">
+      <div class="flex items-center justify-between">
+        <!-- Логотип -->
+        <a href="/" class="flex items-center">
+          <span class="text-2xl font-bold text-[#0066FF]">АвтоЗапчасти</span>
+          <span class="ml-1 text-xl">🔧</span>
+        </a>
 
-    <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS COMMENT! -->
-    <script src="https://cdn.poehali.dev/intertnal/js/pp-min-2.js"></script>
-    <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS COMMENT! -->
+        <!-- Поиск - скрыт на мобильных устройствах -->
+        <div class="hidden md:flex items-center space-x-2 flex-1 max-w-md mx-4">
+          <div class="relative flex-1">
+            <input
+              type="search"
+              placeholder="Поиск запчастей..."
+              class="pl-10 pr-4 py-2 w-full border rounded-md"
+            />
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400">
+              <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+            </svg>
+          </div>
+          <button class="px-4 py-2 bg-[#0066FF] text-white rounded-md text-sm">
+            Найти
+          </button>
+        </div>
 
-  </head>
+        <!-- Навигация и корзина -->
+        <div class="hidden md:flex items-center space-x-6">
+          <nav class="flex space-x-6">
+            <a href="/catalog" class="text-gray-800 hover:text-[#0066FF] transition-colors">
+              Каталог
+            </a>
+            <a href="/delivery" class="text-gray-800 hover:text-[#0066FF] transition-colors">
+              Доставка
+            </a>
+            <a href="/contacts" class="text-gray-800 hover:text-[#0066FF] transition-colors">
+              Контакты
+            </a>
+          </nav>
+          <a href="/cart" class="relative">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6 text-gray-800 hover:text-[#0066FF] transition-colors">
+              <circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/>
+            </svg>
+            <span class="absolute -top-2 -right-2 bg-[#0066FF] text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+              0
+            </span>
+          </a>
+        </div>
 
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+        <!-- Мобильное меню кнопка -->
+        <button 
+          class="md:hidden text-gray-800"
+          onclick="document.getElementById('mobile-menu').classList.toggle('hidden')"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6">
+            <line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Мобильное меню -->
+      <div id="mobile-menu" class="md:hidden mt-4 pb-4 hidden">
+        <div class="flex items-center space-x-2 mb-4">
+          <div class="relative flex-1">
+            <input
+              type="search"
+              placeholder="Поиск запчастей..."
+              class="pl-10 pr-4 py-2 w-full border rounded-md"
+            />
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400">
+              <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+            </svg>
+          </div>
+          <button class="px-4 py-2 bg-[#0066FF] text-white rounded-md text-sm">
+            Найти
+          </button>
+        </div>
+        <nav class="flex flex-col space-y-3">
+          <a href="/catalog" class="text-gray-800 hover:text-[#0066FF] transition-colors py-2">
+            Каталог
+          </a>
+          <a href="/delivery" class="text-gray-800 hover:text-[#0066FF] transition-colors py-2">
+            Доставка
+          </a>
+          <a href="/contacts" class="text-gray-800 hover:text-[#0066FF] transition-colors py-2">
+            Контакты
+          </a>
+          <a href="/cart" class="text-gray-800 hover:text-[#0066FF] transition-colors py-2 flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 mr-2">
+              <circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/>
+            </svg>
+            Корзина <span class="ml-2 bg-[#0066FF] text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">0</span>
+          </a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-grow">
+    <!-- Главный баннер -->
+    <div class="relative bg-gradient-to-r from-gray-900 to-gray-800 text-white overflow-hidden">
+      <div class="absolute inset-0 opacity-30 bg-center bg-cover" style="background-image: url('https://placehold.co/1200x500/0066FF/FFFFFF/png')"></div>
+      <div class="container mx-auto px-4 py-16 md:py-24 relative z-10">
+        <div class="max-w-2xl">
+          <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-6">
+            Автозапчасти для любых марок автомобилей
+          </h1>
+          <p class="text-lg md:text-xl mb-8 text-gray-200">
+            Широкий ассортимент оригинальных и неоригинальных запчастей 
+            с доставкой по всей России
+          </p>
+          <div class="flex flex-col sm:flex-row gap-4">
+            <a href="/catalog" class="inline-block bg-[#0066FF] hover:bg-[#0052CC] text-white font-medium py-3 px-6 rounded-md text-center">
+              Перейти в каталог
+            </a>
+            <a href="/car-selector" class="inline-block border border-white text-white hover:bg-white/10 font-medium py-3 px-6 rounded-md text-center">
+              Подбор по автомобилю
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Секция с подбором по авто -->
+    <section class="py-10 bg-gray-50">
+      <div class="container mx-auto px-4">
+        <div class="border rounded-lg shadow-md bg-white">
+          <div class="p-4 border-b">
+            <h3 class="text-xl font-bold">Подбор запчастей по автомобилю</h3>
+          </div>
+          <div class="p-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <select class="w-full p-2 border rounded-md">
+                  <option value="">Выберите марку</option>
+                  <option value="audi">Audi</option>
+                  <option value="bmw">BMW</option>
+                  <option value="honda">Honda</option>
+                  <option value="toyota">Toyota</option>
+                  <option value="volkswagen">Volkswagen</option>
+                </select>
+              </div>
+              
+              <div>
+                <select class="w-full p-2 border rounded-md" disabled>
+                  <option value="">Выберите модель</option>
+                </select>
+              </div>
+              
+              <div>
+                <select class="w-full p-2 border rounded-md" disabled>
+                  <option value="">Выберите год</option>
+                </select>
+              </div>
+            </div>
+            
+            <button 
+              class="w-full mt-4 bg-[#0066FF] text-white py-2 px-4 rounded-md opacity-50 cursor-not-allowed"
+              disabled
+            >
+              Найти запчасти
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Популярные категории -->
+    <section class="py-12">
+      <div class="container mx-auto px-4">
+        <div class="flex justify-between items-center mb-8">
+          <h2 class="text-2xl font-bold">Популярные категории</h2>
+          <a href="/catalog" class="inline-block border border-gray-300 hover:border-gray-400 text-gray-700 font-medium py-2 px-4 rounded-md">
+            Все категории
+          </a>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+          <!-- Категория 1 -->
+          <a href="/catalog/engine" class="block">
+            <div class="border rounded-lg overflow-hidden h-full hover:shadow-md transition-shadow duration-300 group">
+              <div class="p-4 flex flex-col h-full">
+                <div class="mb-4 overflow-hidden rounded-md">
+                  <img 
+                    src="https://placehold.co/600x400/0066FF/FFFFFF/png" 
+                    alt="Двигатель и комплектующие"
+                    class="w-full aspect-[4/3] object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
+                </div>
+                <div class="flex-grow">
+                  <h3 class="font-medium text-lg mb-1 group-hover:text-[#0066FF] transition-colors">Двигатель и комплектующие</h3>
+                  <p class="text-sm text-gray-500">1250 товаров</p>
+                </div>
+              </div>
+            </div>
+          </a>
+          
+          <!-- Категория 2 -->
+          <a href="/catalog/suspension" class="block">
+            <div class="border rounded-lg overflow-hidden h-full hover:shadow-md transition-shadow duration-300 group">
+              <div class="p-4 flex flex-col h-full">
+                <div class="mb-4 overflow-hidden rounded-md">
+                  <img 
+                    src="https://placehold.co/600x400/0066FF/FFFFFF/png" 
+                    alt="Подвеска и рулевое"
+                    class="w-full aspect-[4/3] object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
+                </div>
+                <div class="flex-grow">
+                  <h3 class="font-medium text-lg mb-1 group-hover:text-[#0066FF] transition-colors">Подвеска и рулевое</h3>
+                  <p class="text-sm text-gray-500">860 товаров</p>
+                </div>
+              </div>
+            </div>
+          </a>
+          
+          <!-- Категория 3 -->
+          <a href="/catalog/electronics" class="block">
+            <div class="border rounded-lg overflow-hidden h-full hover:shadow-md transition-shadow duration-300 group">
+              <div class="p-4 flex flex-col h-full">
+                <div class="mb-4 overflow-hidden rounded-md">
+                  <img 
+                    src="https://placehold.co/600x400/0066FF/FFFFFF/png" 
+                    alt="Автоэлектроника"
+                    class="w-full aspect-[4/3] object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
+                </div>
+                <div class="flex-grow">
+                  <h3 class="font-medium text-lg mb-1 group-hover:text-[#0066FF] transition-colors">Автоэлектроника</h3>
+                  <p class="text-sm text-gray-500">540 товаров</p>
+                </div>
+              </div>
+            </div>
+          </a>
+          
+          <!-- Категория 4 -->
+          <a href="/catalog/brake" class="block">
+            <div class="border rounded-lg overflow-hidden h-full hover:shadow-md transition-shadow duration-300 group">
+              <div class="p-4 flex flex-col h-full">
+                <div class="mb-4 overflow-hidden rounded-md">
+                  <img 
+                    src="https://placehold.co/600x400/0066FF/FFFFFF/png" 
+                    alt="Тормозная система"
+                    class="w-full aspect-[4/3] object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
+                </div>
+                <div class="flex-grow">
+                  <h3 class="font-medium text-lg mb-1 group-hover:text-[#0066FF] transition-colors">Тормозная система</h3>
+                  <p class="text-sm text-gray-500">480 товаров</p>
+                </div>
+              </div>
+            </div>
+          </a>
+          
+          <!-- Категория 5 -->
+          <a href="/catalog/body" class="block">
+            <div class="border rounded-lg overflow-hidden h-full hover:shadow-md transition-shadow duration-300 group">
+              <div class="p-4 flex flex-col h-full">
+                <div class="mb-4 overflow-hidden rounded-md">
+                  <img 
+                    src="https://placehold.co/600x400/0066FF/FFFFFF/png" 
+                    alt="Кузовные детали"
+                    class="w-full aspect-[4/3] object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
+                </div>
+                <div class="flex-grow">
+                  <h3 class="font-medium text-lg mb-1 group-hover:text-[#0066FF] transition-colors">Кузовные детали</h3>
+                  <p class="text-sm text-gray-500">720 товаров</p>
+                </div>
+              </div>
+            </div>
+          </a>
+          
+          <!-- Категория 6 -->
+          <a href="/catalog/oil" class="block">
+            <div class="border rounded-lg overflow-hidden h-full hover:shadow-md transition-shadow duration-300 group">
+              <div class="p-4 flex flex-col h-full">
+                <div class="mb-4 overflow-hidden rounded-md">
+                  <img 
+                    src="https://placehold.co/600x400/0066FF/FFFFFF/png" 
+                    alt="Масла и жидкости"
+                    class="w-full aspect-[4/3] object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
+                </div>
+                <div class="flex-grow">
+                  <h3 class="font-medium text-lg mb-1 group-hover:text-[#0066FF] transition-colors">Масла и жидкости</h3>
+                  <p class="text-sm text-gray-500">350 товаров</p>
+                </div>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Преимущества -->
+    <section class="bg-gray-50 py-16">
+      <div class="container mx-auto px-4">
+        <h2 class="text-2xl md:text-3xl font-bold text-center mb-12">Почему выбирают нас</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <!-- Преимущество 1 -->
+          <div class="flex flex-col items-center text-center">
+            <div class="mb-4">
+              <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#0066FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                <path d="m9 12 2 2 4-4"/>
+              </svg>
+            </div>
+            <h3 class="text-xl font-semibold mb-2">Гарантия качества</h3>
+            <p class="text-gray-600">Все товары сертифицированы и имеют гарантию производителя</p>
+          </div>
+          
+          <!-- Преимущество 2 -->
+          <div class="flex flex-col items-center text-center">
+            <div class="mb-4">
+              <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#0066FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10 17.5H4c-1.1 0-2-.9-2-2v-2a3 3 0 0 1 3-3h2"/>
+                <path d="M22 17.5h-6c-1.1 0-2-.9-2-2v-2a3 3 0 0 1 3-3h2"/>
+                <rect x="6" y="7.5" width="12" height="10" rx="3"/>
+                <circle cx="18" cy="15.5" r="2"/>
+                <circle cx="6" cy="15.5" r="2"/>
+              </svg>
+            </div>
+            <h3 class="text-xl font-semibold mb-2">Быстрая доставка</h3>
+            <p class="text-gray-600">Доставка по всей России. В крупных городах - на следующий день</p>
+          </div>
+          
+          <!-- Преимущество 3 -->
+          <div class="flex flex-col items-center text-center">
+            <div class="mb-4">
+              <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#0066FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="5" width="20" height="14" rx="2"/>
+                <line x1="2" x2="22" y1="10" y2="10"/>
+              </svg>
+            </div>
+            <h3 class="text-xl font-semibold mb-2">Удобная оплата</h3>
+            <p class="text-gray-600">Наличные, банковские карты, онлайн-платежи и другие способы</p>
+          </div>
+          
+          <!-- Преимущество 4 -->
+          <div class="flex flex-col items-center text-center">
+            <div class="mb-4">
+              <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#0066FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m21.5 2-1.5 1.5-4-4L17.5 1 21.5 2zM3.5 22l1.5-1.5-4-4L2.5 18l1 4zM10 17l-2-2"/>
+                <path d="M7 4a2 2 0 0 0-2 2"/>
+                <path d="M17 20a2 2 0 0 0 2-2"/>
+                <path d="M11 20.95V14.5"/>
+                <path d="M5 8v1.5a3 3 0 0 0 3 3h2"/>
+                <path d="M19 16v-1.5a3 3 0 0 0-3-3H13"/>
+              </svg>
+            </div>
+            <h3 class="text-xl font-semibold mb-2">Возврат и обмен</h3>
+            <p class="text-gray-600">Легкий возврат и обмен товара в случае брака или ошибки</p>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Популярные товары -->
+    <section class="py-12">
+      <div class="container mx-auto px-4">
+        <div class="flex justify-between items-center mb-8">
+          <h2 class="text-2xl font-bold">Популярные товары</h2>
+          <a href="/catalog/popular" class="inline-block border border-gray-300 hover:border-gray-400 text-gray-700 font-medium py-2 px-4 rounded-md">
+            Смотреть все
+          </a>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+          <!-- Товар 1 -->
+          <div class="border rounded-lg h-full flex flex-col overflow-hidden group">
+            <div class="relative pt-4 px-4">
+              <span class="absolute top-2 left-2 bg-red-500 text-white text-xs py-1 px-2 rounded">
+                Скидка 17%
+              </span>
+              <button 
+                class="absolute top-2 right-2 p-1 rounded-full hover:bg-gray-100 transition-colors"
+                aria-label="Добавить в избранное"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 text-gray-400 hover:text-red-500">
+                  <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+                </svg>
+              </button>
+              <div class="h-48 flex items-center justify-center overflow-hidden mb-4">
+                <img
+                  src="https://placehold.co/300x300/0066FF/FFFFFF/png" 
+                  alt="Масляный фильтр MAHLE OX 339/2D"
+                  class="object-contain h-full w-full transition-transform group-hover:scale-105"
+                />
+              </div>
+            </div>
+            <div class="p-4 flex-grow">
+              <div class="text-sm text-gray-500 mb-1">MAHLE</div>
+              <h3 class="text-base font-medium line-clamp-2 mb-2">Масляный фильтр MAHLE OX 339/2D</h3>
+              <div class="text-xs text-gray-500 mb-3">Артикул: OX 339/2D</div>
+              <div class="text-sm mb-2">
+                <span class="text-green-600 font-medium">В наличии</span>
+              </div>
+            </div>
+            <div class="p-4 flex-shrink-0 border-t">
+              <div class="flex justify-between items-center w-full mb-3">
+                <div class="flex flex-col">
+                  <span class="text-sm text-gray-500 line-through">
+                    590 ₽
+                  </span>
+                  <span class="text-lg font-bold text-[#0066FF]">
+                    490 ₽
+                  </span>
+                </div>
+                <button 
+                  class="rounded-full p-2 border border-gray-300 hover:border-gray-400 text-gray-700"
+                  aria-label="Добавить в корзину"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
+                    <circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/>
+                  </svg>
+                </button>
+              </div>
+              <button class="w-full bg-[#0066FF] hover:bg-[#0052CC] text-white py-2 px-4 rounded-md">
+                Купить
+              </button>
+            </div>
+          </div>
+          
+          <!-- Товар 2 -->
+          <div class="border rounded-lg h-full flex flex-col overflow-hidden group">
+            <div class="relative pt-4 px-4">
+              <button 
+                class="absolute top-2 right-2 p-1 rounded-full hover:bg-gray-100 transition-colors"
+                aria-label="Добавить в избранное"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 text-gray-400 hover:text-red-500">
+                  <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+                </svg>
+              </button>
+              <div class="h-48 flex items-center justify-center overflow-hidden mb-4">
+                <img
+                  src="https://placehold.co/300x300/0066FF/FFFFFF/png" 
+                  alt="Комплект тормозных колодок FERODO FDB1789"
+                  class="object-contain h-full w-full transition-transform group-hover:scale-105"
+                />
+              </div>
+            </div>
+            <div class="p-4 flex-grow">
+              <div class="text-sm text-gray-500 mb-1">FERODO</div>
+              <h3 class="text-base font-medium line-clamp-2 mb-2">Комплект тормозных колодок FERODO FDB1789</h3>
+              <div class="text-xs text-gray-500 mb-3">Артикул: FDB1789</div>
+              <div class="text-sm mb-2">
+                <span class="text-green-600 font-medium">В наличии</span>
+              </div>
+            </div>
+            <div class="p-4 flex-shrink-0 border-t">
+              <div class="flex justify-between items-center w-full mb-3">
+                <div class="flex flex-col">
+                  <span class="text-lg font-bold text-[#0066FF]">
+                    2 300 ₽
+                  </span>
+                </div>
+                <button 
+                  class="rounded-full p-2 border border-gray-300 hover:border-gray-400 text-gray-700"
+                  aria-label="Добавить в корзину"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
+                    <circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/>
+                  </svg>
+                </button>
+              </div>
+              <button class="w-full bg-[#0066FF] hover:bg-[#0052CC] text-white py-2 px-4 rounded-md">
+                Купить
+              </button>
+            </div>
+          </div>
+          
+          <!-- Товар 3 -->
+          <div class="border rounded-lg h-full flex flex-col overflow-hidden group">
+            <div class="relative pt-4 px-4">
+              <span class="absolute top-2 left-2 bg-red-500 text-white text-xs py-1 px-2 rounded">
+                Скидка 13%
+              </span>
+              <button 
+                class="absolute top-2 right-2 p-1 rounded-full hover:bg-gray-100 transition-colors"
+                aria-label="Добавить в избранное"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 text-gray-400 hover:text-red-500">
+                  <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+                </svg>
+              </button>
+              <div class="h-48 flex items-center justify-center overflow-hidden mb-4">
+                <img
+                  src="https://placehold.co/300x300/0066FF/FFFFFF/png" 
+                  alt="Амортизатор подвески KYB 343307"
+                  class="object-contain h-full w-full transition-transform group-hover:scale-105"
+                />
+              </div>
+            </div>
+            <div class="p-4 flex-grow">
+              <div class="text-sm text-gray-500 mb-1">KYB</div>
+              <h3 class="text-base font-medium line-clamp-2 mb-2">Амортизатор подвески KYB 343307</h3>
+              <div class="text-xs text-gray-500 mb-3">Артикул: 343307</div>
+              <div class="text-sm mb-2">
+                <span class="text-green-600 font-medium">В наличии</span>
+              </div>
+            </div>
+            <div class="p-4 flex-shrink-0 border-t">
+              <div class="flex justify-between items-center w-full mb-3">
+                <div class="flex flex-col">
+                  <span class="text-sm text-gray-500 line-through">
+                    4 500 ₽
+                  </span>
+                  <span class="text-lg font-bold text-[#0066FF]">
+                    3 900 ₽
+                  </span>
+                </div>
+                <button 
+                  class="rounded-full p-2 border border-gray-300 hover:border-gray-400 text-gray-700"
+                  aria-label="Добавить в корзину"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
+                    <circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/>
+                  </svg>
+                </button>
+              </div>
+              <button class="w-full bg-[#0066FF] hover:bg-[#0052CC] text-white py-2 px-4 rounded-md">
+                Купить
+              </button>
+            </div>
+          </div>
+          
+          <!-- Товар 4 -->
+          <div class="border rounded-lg h-full flex flex-col overflow-hidden group">
+            <div class="relative pt-4 px-4">
+              <button 
+                class="absolute top-2 right-2 p-1 rounded-full hover:bg-gray-100 transition-colors"
+                aria-label="Добавить в избранное"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 text-gray-400 hover:text-red-500">
+                  <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+                </svg>
+              </button>
+              <div class="h-48 flex items-center justify-center overflow-hidden mb-4">
+                <img
+                  src="https://placehold.co/300x300/0066FF/FFFFFF/png" 
+                  alt="Воздушный фильтр MANN-FILTER C 30 193"
+                  class="object-contain h-full w-full transition-transform group-hover:scale-105"
+                />
+              </div>
+            </div>
+            <div class="p-4 flex-grow">
+              <div class="text-sm text-gray-500 mb-1">MANN-FILTER</div>
+              <h3 class="text-base font-medium line-clamp-2 mb-2">Воздушный фильтр MANN-FILTER C 30 193</h3>
+              <div class="text-xs text-gray-500 mb-3">Артикул: C 30 193</div>
+              <div class="text-sm mb-2">
+                <span class="text-orange-500 font-medium">Под заказ</span>
+              </div>
+            </div>
+            <div class="p-4 flex-shrink-0 border-t">
+              <div class="flex justify-between items-center w-full mb-3">
+                <div class="flex flex-col">
+                  <span class="text-lg font-bold text-[#0066FF]">
+                    850 ₽
+                  </span>
+                </div>
+                <button 
+                  class="rounded-full p-2 border border-gray-300 hover:border-gray-400 text-gray-700"
+                  aria-label="Добавить в корзину"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
+                    <circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/>
+                  </svg>
+                </button>
+              </div>
+              <button class="w-full bg-[#0066FF] hover:bg-[#0052CC] text-white py-2 px-4 rounded-md">
+                Купить
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Баннер с брендами -->
+    <section class="py-12 bg-gray-50">
+      <div class="container mx-auto px-4 text-center">
+        <h2 class="text-2xl font-bold mb-8">Более 500 брендов автозапчастей</h2>
+        <div class="flex flex-wrap justify-center items-center gap-8">
+          <!-- Логотипы брендов -->
+          <div class="h-12 w-24 bg-white shadow-sm rounded-md flex items-center justify-center">
+            <img src="https://placehold.co/96x48/0066FF/FFFFFF/png" alt="Логотип бренда" class="h-8" />
+          </div>
+          <div class="h-12 w-24 bg-white shadow-sm rounded-md flex items-center justify-center">
+            <img src="https://placehold.co/96x48/0066FF/FFFFFF/png" alt="Логотип бренда" class="h-8" />
+          </div>
+          <div class="h-12 w-24 bg-white shadow-sm rounded-md flex items-center justify-center">
+            <img src="https://placehold.co/96x48/0066FF/FFFFFF/png" alt="Логотип бренда" class="h-8" />
+          </div>
+          <div class="h-12 w-24 bg-white shadow-sm rounded-md flex items-center justify-center">
+            <img src="https://placehold.co/96x48/0066FF/FFFFFF/png" alt="Логотип бренда" class="h-8" />
+          </div>
+          <div class="h-12 w-24 bg-white shadow-sm rounded-md flex items-center justify-center">
+            <img src="https://placehold.co/96x48/0066FF/FFFFFF/png" alt="Логотип бренда" class="h-8" />
+          </div>
+          <div class="h-12 w-24 bg-white shadow-sm rounded-md flex items-center justify-center">
+            <img src="https://placehold.co/96x48/0066FF/FFFFFF/png" alt="Логотип бренда" class="h-8" />
+          </div>
+        </div>
+        <a href="/brands" class="inline-block bg-[#0066FF] hover:bg-[#0052CC] text-white font-medium py-2 px-6 rounded-md mt-8">
+          Все бренды
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <!-- Подвал сайта -->
+  <footer class="bg-gray-100 text-gray-800 pt-12 pb-8">
+    <div class="container mx-auto px-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <!-- О компании -->
+        <div>
+          <h3 class="text-lg font-bold mb-4">О компании</h3>
+          <p class="text-sm mb-4">
+            Мы предлагаем широкий ассортимент качественных автозапчастей для различных марок автомобилей по доступным ценам.
+          </p>
+          <div class="flex space-x-4">
+            <a href="#" class="text-gray-500 hover:text-[#0066FF]">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+              </svg>
+            </a>
+            <a href="#" class="text-gray-500 hover:text-[#0066FF]">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+              </svg>
+            </a>
+            <a href="#" class="text-gray-500 hover:text-[#0066FF]">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"/>
+                <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Категории -->
+        <div>
+          <h3 class="text-lg font-bold mb-4">Категории</h3>
+          <ul class="space-y-2">
+            <li>
+              <a href="/catalog/engine" class="text-sm hover:text-[#0066FF]">
+                Двигатель и комплектующие
+              </a>
+            </li>
+            <li>
+              <a href="/catalog/suspension" class="text-sm hover:text-[#0066FF]">
+                Подвеска и рулевое
+              </a>
+            </li>
+            <li>
+              <a href="/catalog/electronics" class="text-sm hover:text-[#0066FF]">
+                Автоэлектроника
+              </a>
+            </li>
+            <li>
+              <a href="/catalog/brake" class="text-sm hover:text-[#0066FF]">
+                Тормозная система
+              </a>
+            </li>
+            <li>
+              <a href="/catalog/oil" class="text-sm hover:text-[#0066FF]">
+                Масла и жидкости
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Информация -->
+        <div>
+          <h3 class="text-lg font-bold mb-4">Информация</h3>
+          <ul class="space-y-2">
+            <li>
+              <a href="/delivery" class="text-sm hover:text-[#0066FF]">
+                Доставка и оплата
+              </a>
+            </li>
+            <li>
+              <a href="/warranty" class="text-sm hover:text-[#0066FF]">
+                Гарантия и возврат
+              </a>
+            </li>
+            <li>
+              <a href="/about" class="text-sm hover:text-[#0066FF]">
+                О компании
+              </a>
+            </li>
+            <li>
+              <a href="/contacts" class="text-sm hover:text-[#0066FF]">
+                Контакты
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Контакты -->
+        <div>
+          <h3 class="text-lg font-bold mb-4">Контакты</h3>
+          <ul class="space-y-3">
+            <li class="flex items-start">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0066FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 mr-2">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+              </svg>
+              <span class="text-sm">8 (800) 123-45-67</span>
+            </li>
+            <li class="flex items-start">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0066FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 mr-2">
+                <rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+              </svg>
+              <span class="text-sm">info@автозапчасти.рф</span>
+            </li>
+            <li class="flex items-start">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0066FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 mr-2">
+                <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>
+              </svg>
+              <span class="text-sm">г. Москва, ул. Автомобильная, д. 1</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="border-t border-gray-300 mt-8 pt-6">
+        <div class="flex flex-col md:flex-row justify-between items-center">
+          <p class="text-sm text-gray-600 mb-4 md:mb-0">
+            © 2023 АвтоЗапчасти. Все права защищены.
+          </p>
+          <div class="flex space-x-4">
+            <a href="/privacy" class="text-sm text-gray-600 hover:text-[#0066FF]">
+              Политика конфиденциальности
+            </a>
+            <a href="/terms" class="text-sm text-gray-600 hover:text-[#0066FF]">
+              Условия использования
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Простой скрипт для демонстрации работы мобильного меню
+    document.addEventListener('DOMContentLoaded', function() {
+      const mobileMenuButton = document.querySelector('button[aria-label="Открыть меню"]');
+      const mobileMenu = document.getElementById('mobile-menu');
+      
+      if (mobileMenuButton && mobileMenu) {
+        mobileMenuButton.addEventListener('click', function() {
+          mobileMenu.classList.toggle('hidden');
+        });
+      }
+    });
+  </script>
+</body>
 </html>
