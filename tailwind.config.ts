@@ -6,7 +6,7 @@ export default {
 		"./pages/**/*.{ts,tsx}",
 		"./components/**/*.{ts,tsx}",
 		"./app/**/*.{ts,tsx}",
-		"./src/**/*.{ts,tsx}",
+		"./src/**/*.{ts,tsx}"
 	],
 	prefix: "",
 	theme: {
@@ -51,6 +51,12 @@ export default {
 				card: {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
+				},
+				autoparts: {
+					DEFAULT: 'hsl(215, 100%, 50%)',
+					dark: 'hsl(215, 100%, 40%)',
+					light: 'hsl(215, 100%, 60%)',
+					foreground: 'hsl(0, 0%, 100%)'
 				},
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
